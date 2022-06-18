@@ -1,14 +1,20 @@
 export default class PreloadScene extends Phaser.Scene {
   constructor() {
-    super({ key: 'PreloadScene' })
+    super({ key: "PreloadScene" });
   }
 
   preload() {
-    this.load.image('phaser-logo', 'assets/img/phaser-logo.png')
+    this.load.image("phaser-logo", "assets/img/phaser-logo.png");
   }
 
   create() {
-    this.scene.start('MainScene')
+    this.add
+      .text(this.cameras.main.width - 15, this.cameras.main.height - 30, `Loading...`, {
+        color: "#000000",
+        fontSize: "24px",
+      })
+      .setOrigin(1, 0);
+    this.scene.start("MainScene");
 
     /**
      * This is how you would dynamically import the mainScene class (with code splitting),
