@@ -20,7 +20,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.onDestroy = onDestroy;
   }
 
-  destroy(fromScene?: boolean): void {
+  destroy(): void {
     var particles = this.scene.add.particles("spark");
     particles.createEmitter({
       x: this.x,
