@@ -15,7 +15,7 @@ export default class PreloadScene extends Phaser.Scene {
         fontSize: "24px",
       })
       .setOrigin(1, 0);
-    this.scene.start("MainScene");
+    this.scene.start("GameOverScene");
 
     /**
      * This is how you would dynamically import the mainScene class (with code splitting),
