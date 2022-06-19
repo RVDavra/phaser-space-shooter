@@ -2,18 +2,22 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   public keys: any;
   public playerInMotion = { left: false, right: false };
   public onDestroy: Function | undefined;
+  public gameMusic?: Phaser.Sound.BaseSound;
 
   constructor(scene: Phaser.Scene) {
     super(scene, scene.cameras.main.width / 2, scene.cameras.main.height, "player");
+    this.setScale(3);
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.keys = scene.input.keyboard.addKeys("LEFT,RIGHT");
 
     this.setCollideWorldBounds(true);
     this.setInteractive();
-    this.on('pointermove', (pointer: any) => {
+    this.on("pointermove", (pointer: any) => {
       this.x = pointer.x;
     });
+    this.gameMusic = this.scene.sound.add("game-music");
+    this.gameMusic.play();
   }
 
   public setOnDestroy(onDestroy: Function) {
@@ -21,15 +25,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   destroy(): void {
-    var particles = this.scene.add.particles("spark");
-    particles.createEmitter({
-      x: this.x,
-      y: this.y,
-      speed: 200,
+    var boom = this.scene.add.sprite(this.x, this.y, "explosion");
+    boom.setScale(1);
+    boom.anims.play("explode");
+    var explosion = this.scene.game.sound.add("explosion", {
+      volume: 0.5,
     });
+    explosion.play();
     this.scene.time.delayedCall(700, function () {
-      particles.destroy();
+      explosion.pause();
+      boom.destroy();
+      explosion.destroy();
     });
+    this.gameMusic?.pause();
+    this.gameMusic?.destroy();
     this.onDestroy && this.onDestroy();
     super.destroy();
   }

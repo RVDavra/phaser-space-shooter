@@ -6,9 +6,11 @@ import GameOverScene from './scenes/gameover'
 const DEFAULT_WIDTH = window.innerWidth
 const DEFAULT_HEIGHT = window.innerHeight
 
-const config = {
+// const config = 
+
+new Phaser.Game({
   type: Phaser.AUTO,
-  backgroundColor: '#ffffff',
+  backgroundColor: '#000',
   scale: {
     parent: 'phaser-game',
     mode: Phaser.Scale.FIT,
@@ -23,7 +25,8 @@ const config = {
       debug: false,
       gravity: { y: 400 }
     }
+  },
+  audio: {
+    disableWebAudio: true
   }
-}
-
-new Phaser.Game(config)
+})
