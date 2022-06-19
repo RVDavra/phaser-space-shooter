@@ -6,6 +6,7 @@ export default class PreloadScene extends Phaser.Scene {
   preload() {
     this.load.image("phaser-logo", "assets/img/enemy-1.png");
     this.load.image("player", "assets/img/ship-1.png");
+    this.load.image("bullet", "assets/img/bullets/bullet7.png");
     this.load.spritesheet("explosion", "assets/img/explosion.png", { frameWidth: 64, frameHeight: 64 });
     this.load.audio("explosion", ["assets/audio/explosion.mp3"]);
     this.load.audio("game-music", ["assets/audio/game.mp3"]);
@@ -24,7 +25,7 @@ export default class PreloadScene extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers("explosion", { start: 0, end: 23, first: 23 }),
       frameRate: 20,
     });
-    this.scene.start("MainScene");
+    this.scene.start("HelloScene");
 
     /**
      * This is how you would dynamically import the mainScene class (with code splitting),

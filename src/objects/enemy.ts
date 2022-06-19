@@ -1,13 +1,16 @@
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   public speed: number = 1;
-  public onDestroyCallback: Function;
   public outOfBound = false;
-  constructor(scene: Phaser.Scene, x: number, speed: number, onDestroyCallback: Function) {
-    super(scene, x, 0, "phaser-logo");
-    this.onDestroyCallback = onDestroyCallback;
-    this.speed = speed;
+  constructor(scene: Phaser.Scene, x: number, y: number) {
+    super(scene, x, y, "phaser-logo");
     scene.add.existing(this);
     scene.physics.add.existing(this);
+  }
+
+  startMoving(x: number, y: number) {
+    this.body.reset(x, y);
+    this.setActive(true);
+    this.setVisible(true);
   }
 
   update(): void {
@@ -19,7 +22,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
 
   destroy(): void {
-    if (!this.outOfBound) {
+    if (!this.outOfBound && this.scene) {
       var boom = this.scene.add.sprite(this.x, this.y, "explosion");
       boom.setScale(1);
       boom.anims.play("explode");
@@ -33,7 +36,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         explosion.destroy();
       });
     }
-    this.onDestroyCallback();
     super.destroy();
   }
 }

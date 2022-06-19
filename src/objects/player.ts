@@ -1,27 +1,47 @@
+import BulletGroup from "./bullet-group";
+import EnemyGroup from "./enimy-group";
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   public keys: any;
   public playerInMotion = { left: false, right: false };
-  public onDestroy: Function | undefined;
+  // public onDestroy: Function | undefined;
   public gameMusic?: Phaser.Sound.BaseSound;
+  public mouseDown = false;
+  public bulletGroup: BulletGroup;
+  public activeTargets: any[] = [];
 
   constructor(scene: Phaser.Scene) {
     super(scene, scene.cameras.main.width / 2, scene.cameras.main.height, "player");
     this.setScale(3);
     scene.add.existing(this);
     scene.physics.add.existing(this);
-    this.keys = scene.input.keyboard.addKeys("LEFT,RIGHT");
+    this.gameMusic = scene.sound.add("game-music");
+    this.gameMusic.play();
 
+    this.addMovement();
+    this.bulletGroup = new BulletGroup(this.scene);
+  }
+
+  public addMovement() {
+    this.keys = this.scene.input.keyboard.addKeys("LEFT,RIGHT,SPACE,ENTER");
     this.setCollideWorldBounds(true);
     this.setInteractive();
     this.on("pointermove", (pointer: any) => {
-      this.x = pointer.x;
+      if (this.mouseDown) {
+        this.x = pointer.x;
+        this.fireBullets();
+      }
     });
-    this.gameMusic = this.scene.sound.add("game-music");
-    this.gameMusic.play();
+    this.on("pointerdown", () => {
+      this.mouseDown = true;
+    });
+    this.on("pointerup", () => {
+      this.mouseDown = false;
+    });
   }
 
-  public setOnDestroy(onDestroy: Function) {
-    this.onDestroy = onDestroy;
+  public fireBullets() {
+    this.bulletGroup.fire(this.x, this.y);
   }
 
   destroy(): void {
@@ -39,11 +59,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
     this.gameMusic?.pause();
     this.gameMusic?.destroy();
-    this.onDestroy && this.onDestroy();
     super.destroy();
   }
 
-  update(): void {
+  protected preUpdate(time: number, delta: number): void {
+    super.preUpdate(time, delta);
     if (this.keys.LEFT.isDown) {
       this.move("left");
     }
@@ -55,6 +75,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
     if (this.keys.RIGHT.isUp && this.playerInMotion.right) {
       this.stopMotion("right");
+    }
+    if (this.keys.SPACE.isDown) {
+      this.bulletGroup.fire(this.x, this.y);
     }
   }
 
@@ -71,9 +94,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.setAccelerationX(0);
   }
 
-  public setGameOverCollider(obj: any) {
+  public setGameOverCollider(obj: any, onGameOver: Function) {
     this.scene.physics.add.collider(this, obj, () => {
+      onGameOver();
       this.destroy();
+    });
+  }
+
+  public setBulletCollider(enemies: EnemyGroup) {
+    this.scene.physics.add.overlap(enemies, this.bulletGroup, function (enemy, projectile) {
+      enemy.destroy();
+      projectile.destroy();
     });
   }
 }

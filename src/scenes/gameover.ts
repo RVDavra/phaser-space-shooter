@@ -4,9 +4,11 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   create() {
+    const gameoverMusic = this.sound.add("gameover-music");
+    gameoverMusic.play();
     this.add
       .text(0, innerHeight / 2, `Game Over`, {
-        color: "#000000",
+        color: "#fff",
         fontSize: "120px",
         fontStyle: "bold",
         fixedWidth: innerWidth,
@@ -15,7 +17,7 @@ export default class GameOverScene extends Phaser.Scene {
       .setOrigin(0, 0);
     const retry = this.add
       .text(0, innerHeight / 2 + 140, `Retry`, {
-        color: "#000000",
+        color: "#fff",
         fontSize: "60px",
         fixedWidth: innerWidth,
         align: "center",
@@ -24,8 +26,9 @@ export default class GameOverScene extends Phaser.Scene {
 
     retry.setInteractive();
     retry.on("pointerdown", () => {
+      gameoverMusic.pause();
+      gameoverMusic.destroy();
       this.scene.start("MainScene");
     });
-    // this.scene.start("MainScene");
   }
 }
