@@ -16,7 +16,7 @@ export default class PreloadScene extends Phaser.Scene {
   create() {
     this.add
       .text(this.cameras.main.width - 15, this.cameras.main.height - 30, `Loading...`, {
-        color: "#000000",
+        color: "#fff",
         fontSize: "24px",
       })
       .setOrigin(1, 0);

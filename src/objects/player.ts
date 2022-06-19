@@ -26,7 +26,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.keys = this.scene.input.keyboard.addKeys("LEFT,RIGHT,SPACE,ENTER");
     this.setCollideWorldBounds(true);
     this.setInteractive();
-    this.on("pointermove", (pointer: any) => {
+    this.scene.input.on("pointermove", (pointer: any) => {
       if (this.mouseDown) {
         this.x = pointer.x;
         this.fireBullets();
@@ -103,8 +103,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   public setBulletCollider(enemies: EnemyGroup) {
     this.scene.physics.add.overlap(enemies, this.bulletGroup, function (enemy, projectile) {
-      enemy.destroy();
-      projectile.destroy();
+      if (enemy.active) {
+        enemy.destroy();
+      }
+      if (projectile.active) {
+        projectile.destroy();
+      }
     });
   }
 }
