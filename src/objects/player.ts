@@ -9,11 +9,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   public mouseDown = false;
   public bulletGroup: BulletGroup;
   public activeTargets: any[] = [];
+  public outer: Phaser.GameObjects.Sprite;
+  public gun: Phaser.GameObjects.Sprite;
 
   constructor(scene: Phaser.Scene) {
-    super(scene, scene.cameras.main.width / 2, scene.cameras.main.height, "player");
-    this.setScale(3);
+    super(scene, scene. cameras.main.width / 2, scene.cameras.main.height, "player-outer");
+    this.gun = new Phaser.GameObjects.Sprite(scene, this.x, this.y - 60, "player-gun");
+    this.outer = new Phaser.GameObjects.Sprite(scene, this.x - 1, this.y - 43, "player");
     scene.add.existing(this);
+    scene.add.existing(this.gun);
+    scene.add.existing(this.outer);
+    this.setScale(1.8);
     scene.physics.add.existing(this);
     this.gameMusic = scene.sound.add("game-music");
     this.gameMusic.play();
@@ -29,6 +35,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.input.on("pointermove", (pointer: any) => {
       if (this.mouseDown) {
         this.x = pointer.x;
+        this.outer.x = pointer.x;
         this.fireBullets();
       }
     });
@@ -45,6 +52,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   destroy(): void {
+    this.gun.destroy();
+    this.outer.destroy();
     var boom = this.scene.add.sprite(this.x, this.y, "explosion");
     boom.setScale(1);
     boom.anims.play("explode");
@@ -79,6 +88,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.keys.SPACE.isDown) {
       this.bulletGroup.fire(this.x, this.y);
     }
+    this.outer.setX(this.x - 1);
+    this.gun.setX(this.x);
   }
 
   move(direction: "left" | "right") {

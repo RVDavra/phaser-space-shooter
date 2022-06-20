@@ -4,10 +4,14 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("phaser-logo", "assets/img/enemy-1.png");
-    this.load.image("player", "assets/img/ship-1.png");
-    this.load.image("bullet", "assets/img/bullets/bullet7.png");
+    this.load.image("phaser-logo", "assets/img/enemy.png");
+    this.load.image("player-outer", "assets/img/ship-outer.png");
+    this.load.image("player-gun", "assets/img/ship-gun.png");
+    this.load.image("player", "assets/img/ship.png");
+    this.load.image("bullet", "assets/img/bullet.png");
+    this.load.image("fire-light", "assets/img/fire-light.png");
     this.load.spritesheet("explosion", "assets/img/explosion.png", { frameWidth: 64, frameHeight: 64 });
+    this.load.audio("shoot", ["assets/audio/shoot.m4a"]);
     this.load.audio("explosion", ["assets/audio/explosion.mp3"]);
     this.load.audio("game-music", ["assets/audio/game.mp3"]);
     this.load.audio("gameover-music", ["assets/audio/gameover.ogg"]);
